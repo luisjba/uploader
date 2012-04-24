@@ -113,7 +113,7 @@ class UploaderController {
 							relativePath=relativePath+file.originalFilename
 							//move file
 							file.transferTo(new File(basePath+relativePath))
-							uploadedFileDomainInstance = config.domainClass.newInstance(uploadType:uploadType, name:file.originalFilename,replace(fileExtension,""), size:file.size, extension: fileExtension, basePath:basePath, path:relativePath, dateUploaded:new Date(currentTime), downloads:0)
+							uploadedFileDomainInstance = config.domainClass.newInstance(uploadType:uploadType, name:file.originalFilename.replace(fileExtension,""), size:file.size, extension: fileExtension, basePath:basePath, path:relativePath, dateUploaded:new Date(currentTime), downloads:0)
 							//if  the afterNewDomainClass event is fired, it must retun true to continue to save changes, otherwise will not execute the save code
 							if(config.afterNewDomainClass && !config.afterNewDomainClass([domainClassInstance:uploadedFileDomainInstance, requestParams:params, responseMap:responseReturn])){
 								if(!uploadedFileDomainInstance.validate()){
@@ -126,7 +126,7 @@ class UploaderController {
 									
 								}else{
 									responseReturn.success = true
-					                responseReturn.message = message(code: "default.created.message", args: [message(code: "${uploadedFileDomainInstance.class.logicalPropertyName}.label", default: "${uploadedFileDomainInstance.class.naturalName}"), uploadedFileDomainInstance])
+					                responseReturn.message = message(code: "default.created.message", args: [message(code: "${uploadedFileDomainInstance.class.naturalName.toLowerCase()}.label", default: "${uploadedFileDomainInstance.class.naturalName}"), uploadedFileDomainInstance])
 					                flash.message = responseReturn.message
 								}
 							} 
@@ -137,14 +137,7 @@ class UploaderController {
 		}
 		//Content Negotiation with the format Request Parameter
 		def model = [uploadedFileDomainInstance: uploadedFileDomainInstance?:config.domainClass.newInstance(params)]
-		request.withFormat {
-			json {render responseReturn as JSON}
-		    xml { render responseReturn as XML }
-			html model
-		}
 		withFormat {
-		    json {render responseReturn as JSON}
-		    xml { render responseReturn as XML }
 			html {
 				if(request.method=="GET"){// rendering the corect view, andh check if the request is made by Ajax to Try to render the ajaxView on the configuration file if exists
 					if(request.xhr){flash.message = null}//delete the flash.message if the request is made by Ajax
@@ -163,6 +156,8 @@ class UploaderController {
 					}
 				}
 			}
+		    json {render responseReturn as JSON}
+		    xml { render responseReturn as XML }
 		}
 	}
     
