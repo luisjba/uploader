@@ -125,8 +125,9 @@ class UploaderController {
 									responseReturn.errors = uploadedFileDomainInstance.errors.allErrors
 									
 								}else{
+									def persistentProperty=grailsApplication.getDomainClass(uploadedFileDomainInstance.class.name)
 									responseReturn.success = true
-					                responseReturn.message = message(code: "default.created.message", args: [message(code: "${uploadedFileDomainInstance.class.naturalName.toLowerCase()}.label", default: "${uploadedFileDomainInstance.class.naturalName}"), uploadedFileDomainInstance])
+					                responseReturn.message = message(code: "default.created.message", args: [message(code: "${persistentProperty.logicalPropertyName}.label", default: "${persistentProperty.naturalName}"), uploadedFileDomainInstance])
 					                flash.message = responseReturn.message
 								}
 							} 
