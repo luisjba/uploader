@@ -113,7 +113,7 @@ class UploaderController {
 							relativePath=relativePath+file.originalFilename
 							//move file
 							file.transferTo(new File(basePath+relativePath))
-							uploadedFileDomainInstance = config.domainClass.newInstance(uploadType:uploadType, name:file.originalFilename.replace(fileExtension,""), size:file.size, extension: fileExtension, basePath:basePath, path:relativePath, dateUploaded:new Date(currentTime), downloads:0)
+							uploadedFileDomainInstance = config.domainClass.newInstance(uploadType:uploadType, name:file.originalFilename.replace("."+fileExtension,""), size:file.size, extension: fileExtension, basePath:basePath, path:relativePath, dateUploaded:new Date(currentTime), downloads:0)
 							//if  the afterNewDomainClass event is fired, it must retun true to continue to save changes, otherwise will not execute the save code
 							if(config.afterNewDomainClass && !config.afterNewDomainClass([domainClassInstance:uploadedFileDomainInstance, requestParams:params, responseMap:responseReturn])){
 								if(!uploadedFileDomainInstance.validate()){
